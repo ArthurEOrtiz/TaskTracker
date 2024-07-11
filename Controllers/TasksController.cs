@@ -1,40 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.DataAccess;
 using TaskTracker.Models;
-using TaskTracker.ViewModels;
 
 namespace TaskTracker.Controllers
 {
-  public class UserTasksController : Controller
+  public class TasksController : Controller
   {
     private readonly TaskTrackerDbContext _context;
 
-    public UserTasksController(TaskTrackerDbContext context)
+    public TasksController(TaskTrackerDbContext context)
     {
       _context = context;
     }
 
-    // GET: UserTasks
+    // GET: Tasks
     public async Task<IActionResult> Index()
     {
-      var userTasks = await _context.UserTasks.ToListAsync();
-
-      var viewModelList = userTasks.Select(task =>
-        new UserTaskViewModel
-        {
-          Id = task.Id,
-          Title = task.Title,
-          Description = task.Description,
-          IsCompleted = task.IsCompleted,
-          DueDate = task.DueDate
-        }).ToList();
-
-
-      return View(viewModelList);
+      return View(await _context.UserTasks.ToListAsync());
     }
 
-    // GET: UserTasks/Details/5
+    // GET: Tasks/Details/5
     public async Task<IActionResult> Details(int? id)
     {
       if (id == null)
@@ -44,7 +31,6 @@ namespace TaskTracker.Controllers
 
       var userTask = await _context.UserTasks
           .FirstOrDefaultAsync(m => m.Id == id);
-
       if (userTask == null)
       {
         return NotFound();
@@ -53,18 +39,23 @@ namespace TaskTracker.Controllers
       return View(userTask);
     }
 
-    // GET: UserTasks/Create
+    // GET: Tasks/Create
     public IActionResult Create()
     {
-      return View();
+      var newTask = new UserTask()
+      {
+        Title = "",
+        DueDate = DateTime.Now,
+      };
+      return PartialView("_Create", newTask);
     }
 
-    // POST: UserTasks/Create
+    // POST: Tasks/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,IsCompleted,UpdatedAt")] UserTask userTask)
+    public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
     {
       if (ModelState.IsValid)
       {
@@ -75,7 +66,7 @@ namespace TaskTracker.Controllers
       return View(userTask);
     }
 
-    // GET: UserTasks/Edit/5
+    // GET: Tasks/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
       if (id == null)
@@ -91,12 +82,12 @@ namespace TaskTracker.Controllers
       return View(userTask);
     }
 
-    // POST: UserTasks/Edit/5
+    // POST: Tasks/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,IsCompleted,UpdatedAt")] UserTask userTask)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
     {
       if (id != userTask.Id)
       {
@@ -126,7 +117,7 @@ namespace TaskTracker.Controllers
       return View(userTask);
     }
 
-    // GET: UserTasks/Delete/5
+    // GET: Tasks/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
       if (id == null)
@@ -144,7 +135,7 @@ namespace TaskTracker.Controllers
       return View(userTask);
     }
 
-    // POST: UserTasks/Delete/5
+    // POST: Tasks/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
