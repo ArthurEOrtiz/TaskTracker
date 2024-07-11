@@ -1,8 +1,18 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.EntityFrameworkCore;
+using TaskTracker.Configuration;
+using TaskTracker.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var dbSettings = builder.Configuration
+	.GetSection(nameof(DataBaseOptions))
+	.Get<DataBaseOptions>();
+
+builder.Services.AddDbContext<TaskTrackerDbContext>(options =>
+  options.UseSqlServer(dbSettings!.ConnectionString));
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
@@ -23,6 +33,9 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
+} else
+{
+	app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
