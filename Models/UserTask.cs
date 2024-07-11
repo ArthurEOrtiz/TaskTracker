@@ -14,10 +14,10 @@ namespace TaskTracker.Models
     [Required]
     [MinLength(3, ErrorMessage = "Title must be at least 3 characters long.")]
     [MaxLength(50, ErrorMessage = "Title must be less than 50 characters long.")]
-    public string Title { get; set; } = string.Empty;
+    public required string Title { get; set; } 
 
     [MaxLength(500, ErrorMessage = "Description must be less than or equal to 500 characters.")]
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [Required]
     [FutureDate(ErrorMessage = "Due date must be today or in the future.")]

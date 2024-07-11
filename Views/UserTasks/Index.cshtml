@@ -1,14 +1,10 @@
-﻿@model IEnumerable<TaskTracker.Models.UserTask>
+﻿@model IEnumerable<TaskTracker.ViewModels.UserTaskViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Tasks</h1>
-
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p> *@
 
 <button onclick="location.href='@Url.Action("Create")'" type="button" class="btn btn-success fw-bold">+ Task</button>
 
@@ -20,37 +16,25 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DueDate)
+                @Html.DisplayNameFor(model => model.FormattedDueDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsCompleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedAt)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model) {
-            <tr>
+            <tr title="@item.Description">
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DueDate)
+                    @Html.DisplayFor(modelItem => item.FormattedDueDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsCompleted)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedAt)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
