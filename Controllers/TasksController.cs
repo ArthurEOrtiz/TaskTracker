@@ -1,8 +1,8 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.DataAccess;
 using TaskTracker.Models;
+using TaskTracker.ViewModels;
 
 namespace TaskTracker.Controllers
 {
@@ -42,28 +42,38 @@ namespace TaskTracker.Controllers
     // GET: Tasks/Create
     public IActionResult Create()
     {
-      var newTask = new UserTask()
-      {
-        Title = "",
-        DueDate = DateTime.Now,
-      };
-      return PartialView("_Create", newTask);
+      return View();
     }
 
     // POST: Tasks/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
+    //{
+    //  if (ModelState.IsValid)
+    //  {
+    //    _context.Add(userTask);
+    //    await _context.SaveChangesAsync();
+    //    return RedirectToAction(nameof(Index));
+    //  }
+    //  //var tasks = await _context.UserTasks.ToListAsync();
+    //  return View("Index", userTask);
+    //}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
+    public async Task<IActionResult> Create([Bind("Task, Action, ButtonText, FormId")] TaskFormViewModal taskFormViewModal)
     {
       if (ModelState.IsValid)
       {
-        _context.Add(userTask);
+        _context.Add(taskFormViewModal.Task);
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
       }
-      return View(userTask);
+
+      return View("Index", taskFormViewModal.Task);
     }
 
     // GET: Tasks/Edit/5
