@@ -22,7 +22,7 @@ namespace TaskTracker.Models
     [Required]
     [FutureDate(ErrorMessage = "Due date must be today or in the future.")]
     [DataType(DataType.DateTime)]
-    public DateTime DueDate { get; set; } 
+    public DateTime DueDate { get; set; } = DateTime.Now.AddDays(1);
 
     public UserTaskStatus Status { get; set; } = UserTaskStatus.NotStarted;
 
