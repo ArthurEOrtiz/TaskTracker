@@ -1,0 +1,33 @@
+﻿@model TaskTracker.ViewModels.TaskFormViewModal
+
+
+@using(Html.BeginForm(Model.Action, "Tasks", FormMethod.Post, new {id = Model.FormId}))
+{
+	@Html.AntiForgeryToken() // to prevent cross-site requests forgery attacks
+
+	@Html.HiddenFor(model => model.Task.Id)
+
+	@Html.ValidationSummary(true) // displays model-level errors, excluding property errors
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.Task.Title, htmlAttributes: new { @class = "control-label"})
+		@Html.EditorFor(model => model.Task.Title, new { htmlAttributes = new { @class = "form-control"}})
+		@Html.ValidationMessageFor(model => model.Task.Title, "", new { @class = "text-danger"})
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.Task.Description, htmlAttributes: new { @class = "control-label"})
+		@Html.TextAreaFor(model => model.Task.Description, 5, 5, new { @class = "form-control"})
+		@Html.ValidationMessageFor(model => model.Task.Description, "", new { @class = "text-danger"})
+	</div>
+
+	<div class="form-group mb-4">
+		@Html.LabelFor(model => model.Task.DueDate, htmlAttributes: new { @class = "control-label" })
+		@Html.TextBoxFor(model => model.Task.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date"})
+		@Html.ValidationMessageFor(model => model.Task.DueDate, "", new { @class = "text-danger" })
+	</div>
+
+	<div class="form-group">
+		<input type="submit" value="@Model.ButtonText" class="btn btn-primary" />
+	</div>
+}
