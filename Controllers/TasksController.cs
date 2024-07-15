@@ -33,7 +33,7 @@ namespace TaskTracker.Controllers
           .FirstOrDefaultAsync(m => m.Id == id);
       if (userTask == null)
       {
-        return NotFound();
+        return NotFound("User not found.");
       }
 
       return View(userTask);
