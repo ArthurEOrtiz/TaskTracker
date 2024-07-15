@@ -1,5 +1,13 @@
 ﻿@using TaskTracker.ViewModels
 @model TaskTracker.Models.UserTask
+@{
+  var viewModel = new TaskFormViewModal
+      {
+        Action = "Create",
+        ButtonText = "Create Task",
+        FormId = "createForm"
+      };
+}
 
 <div class="modal fade"
      id="createTaskModal"
@@ -20,14 +28,6 @@
         </button>
       </div>
       <div class="modal-body">
-        @{
-          var viewModel = new TaskFormViewModal
-          {
-            Action = "Create",
-            ButtonText = "Create Task",
-            FormId = "createForm"
-          };
-        }
         @await Html.PartialAsync("_Form", viewModel)
       </div>
     </div>

@@ -48,20 +48,7 @@ namespace TaskTracker.Controllers
     // POST: Tasks/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
-    //{
-    //  if (ModelState.IsValid)
-    //  {
-    //    _context.Add(userTask);
-    //    await _context.SaveChangesAsync();
-    //    return RedirectToAction(nameof(Index));
-    //  }
-    //  //var tasks = await _context.UserTasks.ToListAsync();
-    //  return View("Index", userTask);
-    //}
+   
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Task, Action, ButtonText, FormId")] TaskFormViewModal taskFormViewModal)
