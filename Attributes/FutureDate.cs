@@ -8,29 +8,14 @@ namespace TaskTracker.Attributes
   /// DateTime property is set to today or a future date.
   /// </summary>
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-  public class FutureDate : ValidationAttribute, IClientModelValidator 
+  public class FutureDate : ValidationAttribute, IClientModelValidator
   {
-    /// <summary>
-    /// The IsValid method overrides the base class's method to provide 
-    /// the specific validation logic. It checks if the value passed is a 
-    /// <see cref="DateTime"/> object and whether this date is today or in the future. 
-    /// If these conditions are met, the method returns <see cref="bool"/> true, indicating 
-    /// the validation passed; otherwise, it returns <see cref="bool"/> false.
-    /// </summary>
-    /// <param name="value">Any <see cref="object"/> value to validate</param>
-    /// <returns>
-    ///   <see cref="bool"/> True if the value is a DateTime object and 
-    ///   represents today's date or a future date; otherwise, <see cref="bool"/> 
-    ///   false.
-    /// </returns>
-    public override bool IsValid(object? value)
+    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-      if (value is DateTime compareDate && compareDate.Date >= DateTime.Today)
-      {
-        return true;
-      }
-
-      return false;
+      if (value is DateTime dateValue && dateValue >= DateTime.Today)
+        return ValidationResult.Success!;
+      
+      return new ValidationResult("Due date must be in the future.");
     }
 
     /// <summary>
@@ -46,10 +31,10 @@ namespace TaskTracker.Attributes
     /// <param name="context">A <see cref="ClientModelValidationContext"/> context for model validation, containing attributes to be modified for client-side validation.</param>
     public void AddValidation(ClientModelValidationContext context)
     {
-      ArgumentNullException.ThrowIfNull(context);
+      ArgumentNullException.ThrowIfNull(context); // Throws ArgumentNullException if context is null
 
-      MergeAttribute(context.Attributes, "data-val", "true");
-      MergeAttribute(context.Attributes, "data-val-futuredate", ErrorMessage ?? "Invalid date.");
+      MergeAttribute(context.Attributes, "data-val", "true"); // This will enable client-side validation by  setting the data-val attribute to true which will  trigger the validation process on the client side
+      MergeAttribute(context.Attributes, "data-val-futuredate", ErrorMessage ?? "Invalid date."); // This will set the data-val-futuredate attribute to the custom error message or a default message if no custom message is provided
     }
 
     /// <summary>
