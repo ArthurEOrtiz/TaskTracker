@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using TaskTracker.DataAccess;
 using TaskTracker.Models;
 using TaskTracker.ViewModels;
@@ -48,7 +49,7 @@ namespace TaskTracker.Controllers
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Title, Description, DueDate")] UserTask userTask)
+    public async Task<IActionResult> Create([Bind("Title, Description, DueDate, Status")] UserTask userTask)
     {
       if (ModelState.IsValid)
       {
@@ -57,9 +58,8 @@ namespace TaskTracker.Controllers
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
       }
-      
-      var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
-      return Json(new { success = false, errors = errors });
+
+      return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
     // GET: Tasks/Edit/5
@@ -112,34 +112,6 @@ namespace TaskTracker.Controllers
       }
       return View("Index", taskFormViewModal.UserTask);
     }
-    // {
-    //   if (id != userTask.Id)
-    //   {
-    //     return NotFound();
-    //   }
-
-    //   if (ModelState.IsValid)
-    //   {
-    //     try
-    //     {
-    //       _context.Update(userTask);
-    //       await _context.SaveChangesAsync();
-    //     }
-    //     catch (DbUpdateConcurrencyException)
-    //     {
-    //       if (!UserTaskExists(userTask.Id))
-    //       {
-    //         return NotFound();
-    //       }
-    //       else
-    //       {
-    //         throw;
-    //       }
-    //     }
-    //     return RedirectToAction(nameof(Index));
-    //   }
-    //   return View(userTask);
-    // }
 
     // GET: Tasks/Delete/5
     public async Task<IActionResult> Delete(int? id)

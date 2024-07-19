@@ -24,7 +24,8 @@
 		@Html.LabelFor(model => model.UserTask.DueDate, htmlAttributes: new { @class = "control-label" })
 		@if (Model.UserTask.DueDate == DateTime.MinValue)
 		{
-			@Html.TextBoxFor(model => model.UserTask.DueDate, new { @class = "form-control", type = "date" })
+			var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
+			@Html.TextBoxFor(model => model.UserTask.DueDate, new { @class = "form-control", type = "date", /* min = today */ })
 		}
 		else
 		{

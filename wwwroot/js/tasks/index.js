@@ -3,7 +3,20 @@
   $('#createTaskModal').on('shown.bs.modal', function () {
     // Initialize or reinitialize the form validation
     //initializeFormValidation();
+     $.validator.addMethod("futuredate", function(value, element) {
+         const today = new Date();
+         today.setHours(0, 0, 0, 0);
+         const inputDate = new Date(value);
+         inputDate.setHours(0, 0, 0, 0); 
+         return this.optional(element) || inputDate >= today;
+     }, "Date isn't in the future so like change it.");
+
+    $.validator.unobtrusive.adapters.addSingleVal("futuredate", "param");
+
+    $.validator.unobtrusive.parse('#createForm'); 
+
     $('#createForm').validate();
+    
 
     console.log("Modal is fully shown");
   });
