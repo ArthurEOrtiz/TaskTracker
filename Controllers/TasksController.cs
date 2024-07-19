@@ -16,10 +16,8 @@ namespace TaskTracker.Controllers
     }
 
     // GET: Tasks
-    public async Task<IActionResult> Index()
-    {
-      return View(await _context.UserTasks.ToListAsync());
-    }
+    public async Task<IActionResult> Index() => View(await _context.UserTasks.ToListAsync());
+
 
     // GET: Tasks/Details/5
     public async Task<IActionResult> Details(int? id)
@@ -40,27 +38,28 @@ namespace TaskTracker.Controllers
     }
 
     // GET: Tasks/Create
-    public IActionResult Create()
-    {
-      return View();
-    }
+    //public IActionResult Create()
+    //{
+    //  return View();
+    //}
 
     // POST: Tasks/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-   
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Task, Action, ButtonText, FormId")] TaskFormViewModal taskFormViewModal)
+    public async Task<IActionResult> Create([Bind("Title, Description, DueDate")] UserTask userTask)
     {
       if (ModelState.IsValid)
       {
-        _context.Add(taskFormViewModal.Task);
+        userTask.Description ??= string.Empty;
+        _context.Add(userTask);
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
       }
-
-      return View("Index", taskFormViewModal.Task);
+      
+      var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
+      return Json(new { success = false, errors = errors });
     }
 
     // GET: Tasks/Edit/5
@@ -84,9 +83,9 @@ namespace TaskTracker.Controllers
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,Status,UpdatedAt")] UserTask userTask)
+    public async Task<IActionResult> Edit(int id, [Bind("Task, Action, ButtonText, FormId")] TaskFormViewModal taskFormViewModal)
     {
-      if (id != userTask.Id)
+      if (id != taskFormViewModal.UserTask.Id)
       {
         return NotFound();
       }
@@ -95,14 +94,14 @@ namespace TaskTracker.Controllers
       {
         try
         {
-          _context.Update(userTask);
+          _context.Update(taskFormViewModal.UserTask);
           await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-          if (!UserTaskExists(userTask.Id))
+          if (!UserTaskExists(taskFormViewModal.UserTask.Id))
           {
-            return NotFound();
+            return NotFound("Task not found.");
           }
           else
           {
@@ -111,8 +110,36 @@ namespace TaskTracker.Controllers
         }
         return RedirectToAction(nameof(Index));
       }
-      return View(userTask);
+      return View("Index", taskFormViewModal.UserTask);
     }
+    // {
+    //   if (id != userTask.Id)
+    //   {
+    //     return NotFound();
+    //   }
+
+    //   if (ModelState.IsValid)
+    //   {
+    //     try
+    //     {
+    //       _context.Update(userTask);
+    //       await _context.SaveChangesAsync();
+    //     }
+    //     catch (DbUpdateConcurrencyException)
+    //     {
+    //       if (!UserTaskExists(userTask.Id))
+    //       {
+    //         return NotFound();
+    //       }
+    //       else
+    //       {
+    //         throw;
+    //       }
+    //     }
+    //     return RedirectToAction(nameof(Index));
+    //   }
+    //   return View(userTask);
+    // }
 
     // GET: Tasks/Delete/5
     public async Task<IActionResult> Delete(int? id)

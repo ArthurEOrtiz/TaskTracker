@@ -11,18 +11,16 @@ namespace TaskTracker.Models
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
-    [MinLength(3, ErrorMessage = "Title must be at least 3 characters long.")]
+    [Required(ErrorMessage = "Please enter a title.")]
     [MaxLength(50, ErrorMessage = "Title must be less than 50 characters long.")]
     public string Title { get; set; } = string.Empty;
 
     [MaxLength(500, ErrorMessage = "Description must be less than or equal to 500 characters.")]
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
 
     [Required]
-    [FutureDate(ErrorMessage = "Due date must be today or in the future.")]
-    [DataType(DataType.DateTime)]
-    public DateTime DueDate { get; set; } = DateTime.Now.AddDays(1);
+    [FutureDate(ErrorMessage = "The date HAS gotta be in the future bro.")]
+    public DateTime DueDate { get; set; } /*= DateTime.Now.AddDays(1);*/
 
     public UserTaskStatus Status { get; set; } = UserTaskStatus.NotStarted;
 

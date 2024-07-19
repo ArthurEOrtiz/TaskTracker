@@ -1,38 +1,44 @@
-﻿@model TaskTracker.ViewModels.TaskFormViewModal
-
+﻿@model TaskFormViewModal
 
 @using(Html.BeginForm(Model.Action, "Tasks", FormMethod.Post, new {id = Model.FormId}))
 {
 	@Html.AntiForgeryToken() // to prevent cross-site requests forgery attacks
 
-	@Html.HiddenFor(model => model.Task.Id)
+	@Html.HiddenFor(model => model.UserTask.Id)
 
 	@Html.ValidationSummary(true) // displays model-level errors, excluding property errors
 
 	<div class="form-group">
-		@Html.LabelFor(model => model.Task.Title, htmlAttributes: new { @class = "control-label"})
-		@Html.EditorFor(model => model.Task.Title, new { htmlAttributes = new { @class = "form-control"}})
-		@Html.ValidationMessageFor(model => model.Task.Title, "", new { @class = "text-danger"})
+		@Html.LabelFor(model => model.UserTask.Title, htmlAttributes: new { @class = "control-label"})
+		@Html.EditorFor(model => model.UserTask.Title, new { htmlAttributes = new { @class = "form-control"}})
+		@Html.ValidationMessageFor(model => model.UserTask.Title, "", new { @class = "text-danger"})
 	</div>
 
 	<div class="form-group">
-		@Html.LabelFor(model => model.Task.Description, htmlAttributes: new { @class = "control-label"})
-		@Html.TextAreaFor(model => model.Task.Description, 5, 5, new { @class = "form-control"})
-		@Html.ValidationMessageFor(model => model.Task.Description, "", new { @class = "text-danger"})
+		@Html.LabelFor(model => model.UserTask.Description, htmlAttributes: new { @class = "control-label"})
+		@Html.TextAreaFor(model => model.UserTask.Description, 5, 5, new { @class = "form-control"})
+		@Html.ValidationMessageFor(model => model.UserTask.Description, "", new { @class = "text-danger"})
 	</div>
 
 	<div class="form-group">
-		@Html.LabelFor(model => model.Task.DueDate, htmlAttributes: new { @class = "control-label" })
-		@Html.TextBoxFor(model => model.Task.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date"})
-		@Html.ValidationMessageFor(model => model.Task.DueDate, "", new { @class = "text-danger" })
+		@Html.LabelFor(model => model.UserTask.DueDate, htmlAttributes: new { @class = "control-label" })
+		@if (Model.UserTask.DueDate == DateTime.MinValue)
+		{
+			@Html.TextBoxFor(model => model.UserTask.DueDate, new { @class = "form-control", type = "date" })
+		}
+		else
+		{
+			@Html.TextBoxFor(model => model.UserTask.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date"})
+		}
+		@Html.ValidationMessageFor(model => model.UserTask.DueDate, "", new { @class = "text-danger" })
 	</div>
 
 	@if (Model.Action == "Edit")
 	{
 		<div class="form-group">
-			@Html.LabelFor(model => model.Task.Status, htmlAttributes: new { @class = "control-label" })
-			@Html.DropDownListFor(model => model.Task.Status,new SelectList(Enum.GetValues(typeof(TaskTracker.Models.UserTaskStatus))), new { @class = "form-control" })
-			@Html.ValidationMessageFor(model => model.Task.Status, "", new { @class = "text-danger" })
+			@Html.LabelFor(model => model.UserTask.Status, htmlAttributes: new { @class = "control-label" })
+			@Html.DropDownListFor(model => model.UserTask.Status,new SelectList(Enum.GetValues(typeof(TaskTracker.Models.UserTaskStatus))), new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.UserTask.Status, "", new { @class = "text-danger" })
 		</div>
 	}
 
